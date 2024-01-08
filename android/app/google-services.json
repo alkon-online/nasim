@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "919561354804",
+    "project_id": "nasim-61069",
+    "storage_bucket": "nasim-61069.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919561354804:android:576b66be60c0bc57db5461",
+        "android_client_info": {
+          "package_name": "com.nasim.sa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919561354804-a30v0julorvs1l1lsiqsn8tbre8vhcp5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXo0ChYZRh6g8COBM0AdvsoZcgEqyy8uo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919561354804-a30v0julorvs1l1lsiqsn8tbre8vhcp5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
