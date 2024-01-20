@@ -29,41 +29,48 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  //Location
+  Location location = Location();
+  bool? _serviceEnabled;
+  PermissionStatus? _permissionGranted;
+  LocationData? _locationData;
+
   @override
   void initState() {
     super.initState();
-    locationService();
+    _checkLocationServices();
   }
 
-  Future<void> locationService() async {
-    Location location = Location();
-
-    bool serviceEnabled;
-    PermissionStatus permissionLocation;
-    LocationData locData;
-
-    serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
+  Future<void> _checkLocationServices() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled!) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled!) {
         return;
       }
     }
 
-    permissionLocation = await location.hasPermission();
-    if (permissionLocation == PermissionStatus.denied) {
-      permissionLocation = await location.requestPermission();
-      if (permissionLocation != PermissionStatus.granted) {
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
 
-    locData = await location.getLocation();
+    _getLocation();
+  }
 
-    setState(() {
-      UserLocation.lat = locData.latitude!;
-      UserLocation.long = locData.longitude!;
-    });
+  Future<void> _getLocation() async {
+    try {
+      _locationData = await location.getLocation();
+      setState(() {
+        UserLocation.lat = _locationData!.latitude!;
+        UserLocation.long = _locationData!.longitude!;
+      });
+    } catch (e) {
+      print('Error getting location: $e');
+    }
   }
 
   @override
@@ -149,7 +156,8 @@ class _HomeState extends State<Home> {
                             if (snapshot.hasError) {
                               return Center(
                                   child: defultText(
-                                      text: AppLocalizations.of(context)!.welcome,
+                                      text:
+                                          AppLocalizations.of(context)!.welcome,
                                       weight: FontWeight.w600,
                                       size: 20));
                             }
@@ -157,7 +165,8 @@ class _HomeState extends State<Home> {
                             if (snapshot.hasData && !snapshot.data!.exists) {
                               return Center(
                                   child: defultText(
-                                      text: AppLocalizations.of(context)!.welcome,
+                                      text:
+                                          AppLocalizations.of(context)!.welcome,
                                       weight: FontWeight.w600,
                                       size: 20));
                             }
