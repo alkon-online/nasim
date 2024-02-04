@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:nasim/addition/request_maintenance.dart';
+import 'package:nasim/addition/get.dart';
+import 'package:nasim/addition/sendOrder.dart';
 import 'package:nasim/addition/widgets.dart';
 import 'package:nasim/ui/home.dart';
 import 'package:nasim/ui/success.dart';
@@ -17,7 +18,28 @@ class _MaintenanceState extends State<Maintenance> {
   TextEditingController phone = TextEditingController();
   TextEditingController info = TextEditingController();
 
-  String reason = 'cuts out';
+  String selectedLocality = "";
+  List<String> localitiesList = [];
+
+  String selectedSubLocality = "";
+  List<String> subLocalitiesList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSupportedLocalities().then((localities) {
+      setState(() {
+        localitiesList = localities;
+        selectedLocality = localities.first;
+      });
+      getSupportedSubLocalities().then((subLocalities) {
+        setState(() {
+          subLocalitiesList = subLocalities;
+          selectedSubLocality = subLocalities.first;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +48,13 @@ class _MaintenanceState extends State<Maintenance> {
     // context size
     double screenWidth = queryData.size.width;
     double screenHeight = queryData.size.height;
+
+    String selectedIssue = AppLocalizations.of(context)!.cuts_out;
+    List<String> issuesList = [
+      AppLocalizations.of(context)!.cuts_out,
+      AppLocalizations.of(context)!.not_working,
+      AppLocalizations.of(context)!.slow
+    ];
 
     // Widget upload() {
     //   return Container(
@@ -46,8 +75,8 @@ class _MaintenanceState extends State<Maintenance> {
       backgroundColor: const Color(0xff007088),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: screenWidth / 14, vertical: 20),
+          padding:
+              EdgeInsets.symmetric(horizontal: screenWidth / 14, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -67,7 +96,8 @@ class _MaintenanceState extends State<Maintenance> {
                           size: 18.00),
                       SizedBox(height: screenWidth / 100),
                       defultText(
-                          text: AppLocalizations.of(context)!.request_maintenance,
+                          text:
+                              AppLocalizations.of(context)!.request_maintenance,
                           color: Colors.white.withAlpha(100),
                           size: 13.5)
                     ],
@@ -86,61 +116,56 @@ class _MaintenanceState extends State<Maintenance> {
                       weight: FontWeight.w600)),
 
               SizedBox(
-                height: screenHeight / 40,
+                height: 20,
               ),
-              defultInput(placeholder: AppLocalizations.of(context)!.phone, controller: phone),
+              textField(
+                  hint: AppLocalizations.of(context)!.phone, controller: phone),
               SizedBox(
-                height: screenHeight / 65,
+                height: 15,
               ),
 
-              defultInput(
-                placeholder: AppLocalizations.of(context)!.describe,
+              textField(
+                hint: AppLocalizations.of(context)!.describe,
                 controller: info,
               ),
               SizedBox(
                 height: screenHeight / 80,
               ),
-              RadioListTile(
-                activeColor: Colors.white,
-                title: defultText(
-                    text: AppLocalizations.of(context)!.cuts_out,
-                    color: Colors.white,
-                    size: 16),
-                value: "cuts out",
-                groupValue: reason,
-                onChanged: (value) {
-                  setState(() {
-                    reason = value.toString();
-                  });
-                },
+
+              dropDown(
+                  value: selectedIssue,
+                  items: issuesList,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedIssue = newValue!;
+                    });
+                  }),
+              SizedBox(
+                height: screenHeight / 80,
               ),
-              RadioListTile(
-                activeColor: Colors.white,
-                title: defultText(
-                    text: AppLocalizations.of(context)!.not_working,
-                    color: Colors.white,
-                    size: 16),
-                value: "not working",
-                groupValue: reason,
-                onChanged: (value) {
-                  setState(() {
-                    reason = value.toString();
-                  });
-                },
+
+              dropDown(
+                  value: selectedLocality,
+                  items: localitiesList,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedLocality = newValue!;
+                    });
+                  }),
+              SizedBox(
+                height: screenHeight / 80,
               ),
-              RadioListTile(
-                activeColor: Colors.white,
-                title: defultText(
-                    text: AppLocalizations.of(context)!.slow,
-                    color: Colors.white,
-                    size: 16),
-                value: "slow connection",
-                groupValue: reason,
-                onChanged: (value) {
-                  setState(() {
-                    reason = value.toString();
-                  });
-                },
+
+              dropDown(
+                  value: selectedSubLocality,
+                  items: subLocalitiesList,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedSubLocality = newValue!;
+                    });
+                  }),
+              SizedBox(
+                height: screenHeight / 80,
               ),
 
               // upload info
@@ -149,7 +174,7 @@ class _MaintenanceState extends State<Maintenance> {
               //     size: 20,
               //     weight: FontWeight.w600),
               // SizedBox(
-              //   height: screenHeight / 40,
+              //   height: 20,
               // ),
               // upload(),
               const Expanded(child: SizedBox()),
@@ -175,11 +200,14 @@ class _MaintenanceState extends State<Maintenance> {
                     // log(response.status.toString());
 
                     //if(response.isSuccess){
-                    DateTime now = DateTime.now();
-                    String formattedDate =
-                        DateFormat('yyyy-MM-dd – kk:mm').format(now);
-                    requestMaintenance(Home.name, phone.text, info.text, reason,
-                        UserLocation.lat, UserLocation.long, formattedDate);
+                    sendOrder(
+                        Home.name,
+                        phone.text,
+                        "maintenance",
+                        info.text,
+                        issue: selectedIssue,
+                        selectedLocality,
+                        selectedSubLocality);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const Success()),

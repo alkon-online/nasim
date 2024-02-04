@@ -87,9 +87,11 @@ class _AboutState extends State<About> {
             ),
 
             //form
-            defultInput(placeholder: AppLocalizations.of(context)!.name, controller: name),
-            SizedBox(height: screenHeight / 65),
-            defultInput(placeholder: AppLocalizations.of(context)!.phone, controller: phone),
+            textField(
+                  hint: AppLocalizations.of(context)!.name, controller: name),
+            SizedBox(height: 15),
+            textField(
+                  hint: AppLocalizations.of(context)!.phone, controller: phone),
             const Expanded(child: SizedBox()),
             defultButton(
                 text: AppLocalizations.of(context)!.next,

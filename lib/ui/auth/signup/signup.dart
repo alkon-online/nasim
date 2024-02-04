@@ -92,17 +92,17 @@ class _SignUpState extends State<SignUp> {
 
             //form
 
-            defultInput(
-                placeholder: AppLocalizations.of(context)!.email,
+            textField(
+                  hint: AppLocalizations.of(context)!.email,
                 controller: gmail),
-            SizedBox(height: screenHeight / 65),
-            defultInput(
-                placeholder: AppLocalizations.of(context)!.password,
+            SizedBox(height: 15),
+            textField(
+                  hint: AppLocalizations.of(context)!.password,
                 controller: password,
                 password: true),
-            SizedBox(height: screenHeight / 65),
-            defultInput(
-                placeholder: AppLocalizations.of(context)!.re_password,
+            SizedBox(height: 15),
+            textField(
+                  hint: AppLocalizations.of(context)!.re_password,
                 password: true),
             Expanded(child: SizedBox()),
             defultButton(

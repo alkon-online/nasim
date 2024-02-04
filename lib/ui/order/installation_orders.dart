@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nasim/addition/gmail.dart';
 
-import '../../addition/request_installation.dart';
+import '../../addition/sendOrder.dart';
 import '../../addition/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,15 +24,15 @@ class _InstallationOrderState extends State<InstallationOrder> {
     double screenWidth = queryData.size.width;
 
     
-    Stream<List<InstallationClass>> installation() => FirebaseFirestore.instance
+    Stream<List<OrderClass>> installation() => FirebaseFirestore.instance
         .collection('installation')
         .where('gmail', isEqualTo: uid)
         .snapshots()
         .map((snapshot) =>
-        snapshot.docs.map((doc) => InstallationClass.fromJson(doc.data())).toList());
+        snapshot.docs.map((doc) => OrderClass.fromJson(doc.data())).toList());
 
 
-    Widget buildMaintenance(InstallationClass installation){
+    Widget buildMaintenance(OrderClass installation){
       return InkWell(
         child: Container(
             padding: EdgeInsets.symmetric(vertical: screenWidth / 50),
@@ -87,7 +87,7 @@ class _InstallationOrderState extends State<InstallationOrder> {
                 ),
               ],
             ),
-            StreamBuilder<List<InstallationClass>>(
+            StreamBuilder<List<OrderClass>>(
         stream: installation(),
         builder: (context, snapshot){
           if(snapshot.hasError){

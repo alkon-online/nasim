@@ -1,22 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:nasim/addition/request_installation.dart';
+import 'package:nasim/addition/get.dart';
+import 'package:nasim/addition/sendOrder.dart';
 import 'package:nasim/addition/widgets.dart';
-import 'package:nasim/ui/home.dart';
 import 'package:nasim/ui/success.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Plan extends StatefulWidget {
-  final String phone;
-  final String notes;
-
-  const Plan({super.key, required this.phone, required this.notes});
+  final OrderClass order;
+  const Plan({super.key, required this.order});
 
   @override
   State<Plan> createState() => _PlanState();
 }
 
 class _PlanState extends State<Plan> {
+  String selectedLocality = "";
+  List<String> localitiesList = [];
+
+  String selectedSubLocality = "";
+  List<String> subLocalitiesList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSupportedLocalities().then((localities) {
+      setState(() {
+        localitiesList = localities;
+        selectedLocality = localities.first;
+      });
+      getSupportedSubLocalities().then((subLocalities) {
+        setState(() {
+          subLocalitiesList = subLocalities;
+          selectedSubLocality = subLocalities.first;
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData queryData = MediaQuery.of(context);
@@ -64,16 +85,14 @@ class _PlanState extends State<Plan> {
           ),
         ),
         onTap: () {
-          DateTime now = DateTime.now();
-          String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
-          requestInstallation(
-              Home.name,
-              widget.phone,
-              widget.notes,
-              locality,
-              subLocality,
-              formattedDate,
-              [name, description, price]);
+          sendOrder(
+              widget.order.name,
+              widget.order.phone,
+              widget.order.type,
+              widget.order.notes,
+              widget.order.locality,
+              widget.order.subLocality,
+              plan: [name, description, price]);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Success()),

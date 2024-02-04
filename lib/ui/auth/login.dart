@@ -91,12 +91,12 @@ class _LogInState extends State<LogIn> {
             ),
 
             //form
-            defultInput(
-                placeholder: AppLocalizations.of(context)!.email,
+            textField(
+                  hint: AppLocalizations.of(context)!.email,
                 controller: gmail),
-            SizedBox(height: screenHeight / 65),
-            defultInput(
-                placeholder: AppLocalizations.of(context)!.password,
+            SizedBox(height: 15),
+            textField(
+                  hint: AppLocalizations.of(context)!.password,
                 controller: password,
                 password: true),
             const Expanded(child: SizedBox()),

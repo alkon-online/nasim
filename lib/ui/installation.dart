@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nasim/addition/get.dart';
+import 'package:nasim/addition/sendOrder.dart';
+import 'package:nasim/ui/home.dart';
 import 'package:nasim/ui/plan.dart';
 import '../addition/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,6 +16,28 @@ class Installation extends StatefulWidget {
 class _InstallationState extends State<Installation> {
   TextEditingController phone = TextEditingController();
   TextEditingController note = TextEditingController();
+  String selectedLocality = "";
+  List<String> localitiesList = [];
+
+  String selectedSubLocality = "";
+  List<String> subLocalitiesList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSupportedLocalities().then((localities) {
+      setState(() {
+        localitiesList = localities;
+        selectedLocality = localities.first;
+      });
+      getSupportedSubLocalities().then((subLocalities) {
+        setState(() {
+          subLocalitiesList = subLocalities;
+          selectedSubLocality = subLocalities.first;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,19 +107,41 @@ class _InstallationState extends State<Installation> {
                       weight: FontWeight.w600)),
 
               SizedBox(
-                height: screenHeight / 40,
+                height: 20,
               ),
 
-              defultInput(
-                  placeholder: AppLocalizations.of(context)!.phone,
-                  controller: phone),
+              textField(
+                  hint: AppLocalizations.of(context)!.phone, controller: phone),
               SizedBox(
-                height: screenHeight / 65,
+                height: 15,
               ),
 
-              defultInput(
-                  placeholder: AppLocalizations.of(context)!.notes,
-                  controller: note),
+              dropDown(
+                  value: selectedLocality,
+                  items: localitiesList,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedLocality = newValue!;
+                    });
+                  }),
+              SizedBox(
+                height: screenHeight / 80,
+              ),
+
+              dropDown(
+                  value: selectedSubLocality,
+                  items: subLocalitiesList,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedSubLocality = newValue!;
+                    });
+                  }),
+              SizedBox(
+                height: screenHeight / 80,
+              ),
+
+              textField(
+                  hint: AppLocalizations.of(context)!.notes, controller: note),
               const Expanded(child: SizedBox()),
               defultButton(
                   text: AppLocalizations.of(context)!.next,
@@ -104,8 +151,15 @@ class _InstallationState extends State<Installation> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Plan(phone: phone.text, notes: note.text)),
+                          builder: (context) => Plan(
+                                order: OrderClass(
+                                    name: Home.name,
+                                    phone: phone.text,
+                                    type: "installation",
+                                    notes: note.text,
+                                    locality: selectedLocality,
+                                    subLocality: selectedSubLocality),
+                              )),
                     );
                   })
             ],

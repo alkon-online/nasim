@@ -1,8 +1,11 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nasim/addition/sendOrder.dart';
+import 'package:nasim/ui/home.dart';
 
 import '../../addition/widgets.dart';
-import 'installation_orders.dart';
-import 'maintenance_orders.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Orders extends StatefulWidget {
@@ -19,19 +22,51 @@ class _OrdersState extends State<Orders> {
 
     // context size
     double screenWidth = queryData.size.width;
-    double screenHeight = queryData.size.height;
 
-    return Scaffold(
-      backgroundColor: const Color(0xff007088),
+    
+    Stream<List<OrderClass>> orders() => FirebaseFirestore.instance
+        .collection('orders')
+        .where('gmail', isEqualTo: Home.gmail)
+        .snapshots()
+        .map((snapshot) =>
+        snapshot.docs.map((doc) => OrderClass.fromJson(doc.data())).toList());
+
+    Widget buildMaintenance(OrderClass order){
+      return InkWell(
+        child: Container(
+            padding: EdgeInsets.symmetric(vertical: screenWidth / 50),
+            decoration: BoxDecoration(
+              color: Color(0xff007088),
+              border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.5)))
+            ),
+            child: ListTile(
+              title: defultText(text: order.type, weight: FontWeight.w600, size: 18.00, color: Colors.white),
+              subtitle: defultText(text: order.notes, size: 13.5, color: Colors.white.withOpacity(0.7)),
+              
+            trailing: Container(
+              decoration: BoxDecoration(
+              color: order.success == true ? Colors.green : Colors.yellow,
+              borderRadius: BorderRadius.circular(100)
+              ),
+              width: screenWidth / 25,
+              height: screenWidth / 25,
+            ),
+            ),
+          ),
+      );
+    }
+
+     return Scaffold(
+        backgroundColor: Color(0xff007088),
       body: Padding(
-        padding: EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: screenWidth / 14, vertical: screenWidth / 9),
         child: Column(
-          children: [
-            Row(
+            children: [
+              Row(
               children: [
                 const BackButton(color: Colors.white),
-                const SizedBox(
+                SizedBox(
                   width: 18.00,
                 ),
                 Column(
@@ -50,71 +85,31 @@ class _OrdersState extends State<Orders> {
                 ),
               ],
             ),
-            SizedBox(
-              height: screenHeight / 30,
-            ),
-            InkWell(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(50),
-                    borderRadius: BorderRadius.circular(12)),
-                width: screenWidth,
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    defultText(
-                        text: AppLocalizations.of(context)!.maintenance,
-                        size: screenWidth / 23),
-                    const Icon(
-                      Icons.chevron_right,
-                      color: Colors.white,
-                    )
-                  ],
-                ),
+            StreamBuilder<List<OrderClass>>(
+        stream: orders(),
+        builder: (context, snapshot){
+          if(snapshot.hasError){
+            log(snapshot.error.toString());
+            return defultText(
+                        text: AppLocalizations.of(context)!.error,
+                        color: Colors.white,
+                        size: 13.5);
+          } else if(snapshot.hasData){
+            final list = snapshot.data!;
+            // books list
+            return Expanded(
+              child: ListView(
+                children: list.map(buildMaintenance).toList(),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MaintenanceOrder()),
-                );
-              },
-            ),
-            SizedBox(
-              height: screenHeight / 60,
-            ),
-            InkWell(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(50),
-                    borderRadius: BorderRadius.circular(12)),
-                width: screenWidth,
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    defultText(
-                        text: AppLocalizations.of(context)!.installation,
-                        size: screenWidth / 23),
-                    const Icon(
-                      Icons.chevron_right,
-                      color: Colors.white,
-                    )
-                  ],
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const InstallationOrder()),
-                );
-              },
-            ),
-          ],
+            );
+          } else{
+            return const Center(child: CircularProgressIndicator(color: Colors.white),);
+          }
+        },
+      )
+            ],
+          ),
         ),
-      ),
     );
   }
 }
