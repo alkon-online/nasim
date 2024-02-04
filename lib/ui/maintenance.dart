@@ -1,10 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:nasim/addition/request_maintenance.dart';
-import 'package:nasim/addition/userLocation.dart';
 import 'package:nasim/addition/widgets.dart';
 import 'package:nasim/ui/home.dart';
 import 'package:nasim/ui/success.dart';
@@ -22,24 +18,6 @@ class _MaintenanceState extends State<Maintenance> {
   TextEditingController info = TextEditingController();
 
   String reason = 'cuts out';
-
-  @override
-  void initState() {
-    super.initState();
-    getLocation();
-  }
-
-  Future<void> getLocation() async {
-    try {
-      List<Placemark> placemark =
-          await placemarkFromCoordinates(UserLocation.lat, UserLocation.long);
-      setState(() {
-        UserLocation.city = placemark[0].locality!;
-      });
-    } catch (e) {
-      log(e.toString());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,33 +141,6 @@ class _MaintenanceState extends State<Maintenance> {
                     reason = value.toString();
                   });
                 },
-              ),
-
-              SizedBox(
-                height: screenHeight / 65,
-              ),
-              // location info
-              defultText(
-                  text: AppLocalizations.of(context)!.location,
-                  size: 20,
-                  weight: FontWeight.w600),
-              SizedBox(
-                height: screenHeight / 80,
-              ),
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/icons/Home Address.png',
-                    width: 15,
-                  ),      
-                  SizedBox(
-                    width: screenWidth / 50,
-                  ),
-                  defultText(
-                    text: '${UserLocation.city}, ${UserLocation.subLocality}',
-                    size: screenWidth / 22,
-                  ),
-                ],
               ),
 
               // upload info

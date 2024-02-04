@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:nasim/addition/dialog.dart';
 import 'package:nasim/addition/flutterfire.dart';
 import 'package:nasim/addition/widgets.dart';
@@ -14,7 +13,6 @@ import 'package:nasim/ui/splash.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
 import '../addition/gmail.dart';
-import '../addition/userLocation.dart';
 import 'order/my_orders.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -29,49 +27,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  //Location
-  Location location = Location();
-  bool? _serviceEnabled;
-  PermissionStatus? _permissionGranted;
-  LocationData? _locationData;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkLocationServices();
-  }
-
-  Future<void> _checkLocationServices() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled!) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled!) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _getLocation();
-  }
-
-  Future<void> _getLocation() async {
-    try {
-      _locationData = await location.getLocation();
-      setState(() {
-        UserLocation.lat = _locationData!.latitude!;
-        UserLocation.long = _locationData!.longitude!;
-      });
-    } catch (e) {
-      print('Error getting location: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

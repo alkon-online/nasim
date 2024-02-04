@@ -2,23 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nasim/ui/home.dart';
 
 //write book
-Future requestInstallation(name, phone, notes, lat, long, date, plan) async {
+Future requestInstallation(name, phone, notes, locality, subLocality, date, plan) async {
   // Reference the document
   final docInstallation =
-      FirebaseFirestore.instance.collection('installation').doc(name + phone);
+      FirebaseFirestore.instance.collection('Installation').doc(name + phone);
 
-  final installation = InstallationClass(
+  final Installation = InstallationClass(
       name: name,
       phone: phone,
       gmail: Home.gmail,
       notes: notes,
       success: false,
-      lat: lat,
-      long: long,
+      locality: locality,
+      subLocality: subLocality,
       date: date,
       plan: plan);
 
-  final json = installation.toJson();
+  final json = Installation.toJson();
 
   await docInstallation.set(json);
 }
@@ -29,8 +29,8 @@ class InstallationClass {
   String gmail;
   bool success;
   String notes;
-  double lat;
-  double long;
+  double locality;
+  double subLocality;
   String date;
   List plan;
 
@@ -40,8 +40,8 @@ class InstallationClass {
     required this.gmail,
     required this.success,
     required this.notes,
-    required this.lat,
-    required this.long,
+    required this.locality,
+    required this.subLocality,
     required this.date,
     required this.plan,
   });
@@ -53,8 +53,8 @@ class InstallationClass {
         'gmail': gmail,
         'success': success,
         'notes': notes,
-        'lat': lat,
-        'long': long,
+        'locality': locality,
+        'subLocality': subLocality,
         'date': date,
         'plan': plan
       };
@@ -67,8 +67,8 @@ class InstallationClass {
           gmail: json['gmail'],
           success: json['success'],
           notes: json['notes'],
-          lat: json['lat'],
-          long: json['long'],
+          locality: json['locality'],
+          subLocality: json['subLocality'],
           date: json['date'],
           plan: json['plan']);
 }

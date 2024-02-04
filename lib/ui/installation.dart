@@ -1,10 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:nasim/ui/plan.dart';
-
-import '../addition/userLocation.dart';
 import '../addition/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -18,27 +13,6 @@ class Installation extends StatefulWidget {
 class _InstallationState extends State<Installation> {
   TextEditingController phone = TextEditingController();
   TextEditingController note = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    getLocation();
-  }
-
-  Future<void> getLocation() async {
-    try {
-      List<Placemark> placemark =
-          await placemarkFromCoordinates(UserLocation.lat, UserLocation.long);
-
-      setState(() {
-        UserLocation.city = placemark[0].locality!;
-        UserLocation.street = placemark[0].street!;
-        UserLocation.subLocality = placemark[0].subLocality!;
-      });
-    } catch (e) {
-      log(e.toString());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,33 +95,6 @@ class _InstallationState extends State<Installation> {
               defultInput(
                   placeholder: AppLocalizations.of(context)!.notes,
                   controller: note),
-              SizedBox(
-                height: screenHeight / 20,
-              ),
-
-              // location info
-              defultText(
-                  text: AppLocalizations.of(context)!.location,
-                  size: 20,
-                  weight: FontWeight.w600),
-              SizedBox(
-                height: screenHeight / 80,
-              ),
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/icons/Home Address.png',
-                    width: 15,
-                  ),
-                  SizedBox(
-                    width: screenWidth / 50,
-                  ),
-                  defultText(
-                    text: '${UserLocation.city}, ${UserLocation.subLocality}',
-                    size: screenWidth / 22,
-                  ),
-                ],
-              ),
               const Expanded(child: SizedBox()),
               defultButton(
                   text: AppLocalizations.of(context)!.next,

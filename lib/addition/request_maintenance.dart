@@ -2,22 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nasim/ui/home.dart';
 
 //write book
-Future requestMaintenance(name, phone, info, reason, lat, long, date) async {
-
+Future requestMaintenance(
+    name, phone, info, reason, locality, subLocality, date) async {
   // Reference the document
-  final docMaintenance = FirebaseFirestore.instance.collection('maintenance').doc(name+phone);
+  final docMaintenance =
+      FirebaseFirestore.instance.collection('maintenance').doc(name + phone);
 
   final maintenance = MaintenanceClass(
-    name: name,
-    phone: phone,
-    gmail: Home.gmail,
-    info: info,
-    reason: reason,
-    success: false,
-    lat: lat,
-    long: long,
-    date: date
-  );
+      name: name,
+      phone: phone,
+      gmail: Home.gmail,
+      info: info,
+      reason: reason,
+      success: false,
+      locality: locality,
+      subLocality: subLocality,
+      date: date);
 
   final json = maintenance.toJson();
 
@@ -31,21 +31,20 @@ class MaintenanceClass {
   String info;
   String reason;
   bool success;
-  double lat;
-  double long;
+  double locality;
+  double subLocality;
   String date;
 
-  MaintenanceClass({
-    required this.name,
-    required this.phone,
-    required this.gmail,
-    required this.info,
-    required this.reason,
-    required this.success,
-    required this.lat,
-    required this.long,
-    required this.date
-  });
+  MaintenanceClass(
+      {required this.name,
+      required this.phone,
+      required this.gmail,
+      required this.info,
+      required this.reason,
+      required this.success,
+      required this.locality,
+      required this.subLocality,
+      required this.date});
 
   // to JSON
   Map<String, dynamic> toJson() => {
@@ -55,12 +54,21 @@ class MaintenanceClass {
         'info': info,
         'reason': reason,
         'success': success,
-        'lat': lat,
-        'long': long,
+        'locality': locality,
+        'subLocality': subLocality,
         'date': date
       };
 
   // from json
   static MaintenanceClass fromJson(Map<String, dynamic> json) =>
-      MaintenanceClass(name: json['name'], phone: json['phone'], gmail: json['gmail'], info: json['info'], reason: json['reason'], success: json['success'], lat: json['lat'], long: json['long'], date: json['date']);
+      MaintenanceClass(
+          name: json['name'],
+          phone: json['phone'],
+          gmail: json['gmail'],
+          info: json['info'],
+          reason: json['reason'],
+          success: json['success'],
+          locality: json['locality'],
+          subLocality: json['subLocality'],
+          date: json['date']);
 }

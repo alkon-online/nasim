@@ -4,8 +4,6 @@ import 'package:nasim/addition/request_installation.dart';
 import 'package:nasim/addition/widgets.dart';
 import 'package:nasim/ui/home.dart';
 import 'package:nasim/ui/success.dart';
-
-import '../addition/userLocation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Plan extends StatefulWidget {
@@ -32,8 +30,9 @@ class _PlanState extends State<Plan> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 15),
           decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 1))
-          ),
+              border: Border(
+                  bottom: BorderSide(
+                      color: Colors.white.withOpacity(0.2), width: 1))),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -64,14 +63,20 @@ class _PlanState extends State<Plan> {
             ],
           ),
         ),
-        onTap: (){
+        onTap: () {
           DateTime now = DateTime.now();
           String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
-          requestInstallation(Home.name, widget.phone, widget.notes, UserLocation.lat, UserLocation.long,formattedDate, [name, description, price]);
+          requestInstallation(
+              Home.name,
+              widget.phone,
+              widget.notes,
+              locality,
+              subLocality,
+              formattedDate,
+              [name, description, price]);
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const Success()),
+            MaterialPageRoute(builder: (context) => const Success()),
           );
         },
       );
@@ -81,8 +86,8 @@ class _PlanState extends State<Plan> {
       backgroundColor: const Color(0xff007088),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: screenWidth / 14, vertical: 20),
+          padding:
+              EdgeInsets.symmetric(horizontal: screenWidth / 14, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -123,9 +128,18 @@ class _PlanState extends State<Plan> {
               SizedBox(
                 height: screenHeight / 30,
               ),
-              plan(name: AppLocalizations.of(context)!.basic, price: "600", description: "7MB: 100SR + Installation: 500SR"),
-              plan(name: AppLocalizations.of(context)!.plus, price: "650", description: "10MB: 150SR + Installation: 500SR"),
-              plan(name: AppLocalizations.of(context)!.ultimate, price: "700", description: "15MB: 200SR + Installation: 500SR")
+              plan(
+                  name: AppLocalizations.of(context)!.basic,
+                  price: "600",
+                  description: "7MB: 100SR + Installation: 500SR"),
+              plan(
+                  name: AppLocalizations.of(context)!.plus,
+                  price: "650",
+                  description: "10MB: 150SR + Installation: 500SR"),
+              plan(
+                  name: AppLocalizations.of(context)!.ultimate,
+                  price: "700",
+                  description: "15MB: 200SR + Installation: 500SR")
             ],
           ),
         ),
