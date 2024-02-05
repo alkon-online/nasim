@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nasim/addition/change_notifier.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/addition/widgets.dart';
 import 'package:nasim/ui/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -43,6 +44,7 @@ class _LanguageState extends State<Language> {
         onTap: () {
           Provider.of<LocaleProvider>(context, listen: false)
                             .changeLocale(Locale(languageCode));
+                            buildUser();
           Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Home()),
