@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/addition/get.dart';
 import 'package:nasim/addition/sendOrder.dart';
-import 'package:nasim/ui/home.dart';
-import 'package:nasim/ui/plan.dart';
+import 'package:nasim/ui/success.dart';
 import '../addition/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Installation extends StatefulWidget {
-  const Installation({Key? key}) : super(key: key);
+  final PlanItem plan;
+  const Installation({Key? key, required this.plan}) : super(key: key);
 
   @override
   State<Installation> createState() => _InstallationState();
@@ -15,7 +16,7 @@ class Installation extends StatefulWidget {
 
 class _InstallationState extends State<Installation> {
   TextEditingController phone = TextEditingController();
-  TextEditingController note = TextEditingController();
+  TextEditingController notes = TextEditingController();
   String selectedLocality = "";
   List<String> localitiesList = [];
 
@@ -141,26 +142,28 @@ class _InstallationState extends State<Installation> {
               ),
 
               textField(
-                  hint: AppLocalizations.of(context)!.notes, controller: note),
+                  hint: AppLocalizations.of(context)!.notes, controller: notes),
               const Expanded(child: SizedBox()),
               defultButton(
                   text: AppLocalizations.of(context)!.next,
                   size: 18.00,
                   width: screenWidth,
                   onclick: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Plan(
-                                order: OrderClass(
-                                    name: Home.name,
-                                    phone: phone.text,
-                                    type: "installation",
-                                    notes: note.text,
-                                    locality: selectedLocality,
-                                    subLocality: selectedSubLocality),
-                              )),
-                    );
+                    sendOrder(
+                            username: CurrentUser.username,
+                            phone: phone.text,
+                            orderType: "installation",
+                            notes: notes.text,
+                            locality: selectedLocality,
+                            subLocality: selectedSubLocality,
+                            plan: widget.plan)
+                        .then((value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Success()),
+                      );
+                    });
                   })
             ],
           ),

@@ -52,7 +52,5 @@
     "your_orders": "جميع طلباتك",
     "notifications": "الإشعارات",
     "your_notifications": "جميع إشعاراتك",
-    "error": "حصل خطأ ",
-
-    "createdBy": "Tutorial by {company}"
+    "error": "حصل خطأ: {code}"
 }

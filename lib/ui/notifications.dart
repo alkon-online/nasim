@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nasim/addition/gmail.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/addition/user_notification.dart';
 
 import '../addition/widgets.dart';
@@ -23,7 +23,7 @@ class _NotificationsState extends State<Notifications> {
         
     Stream<List<NotificationClass>> notifications() => FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(CurrentUser.uid)
         .collection('notifications')
         .orderBy('time', descending: true)
         .snapshots()

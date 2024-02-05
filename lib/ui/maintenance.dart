@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/addition/get.dart';
 import 'package:nasim/addition/sendOrder.dart';
 import 'package:nasim/addition/widgets.dart';
-import 'package:nasim/ui/home.dart';
 import 'package:nasim/ui/success.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -201,17 +200,20 @@ class _MaintenanceState extends State<Maintenance> {
 
                     //if(response.isSuccess){
                     sendOrder(
-                        Home.name,
-                        phone.text,
-                        "maintenance",
-                        info.text,
-                        issue: selectedIssue,
-                        selectedLocality,
-                        selectedSubLocality);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Success()),
-                    );
+                            username: CurrentUser.username,
+                            phone: phone.text,
+                            orderType: "maintenance",
+                            notes: info.text,
+                            locality: selectedLocality,
+                            subLocality: selectedSubLocality,
+                            issue: selectedIssue)
+                        .then((value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Success()),
+                      );
+                    });
                     //}
                   })
             ],

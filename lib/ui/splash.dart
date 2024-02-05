@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/ui/auth/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nasim/ui/home.dart';
@@ -20,6 +21,7 @@ class _SplashState extends State<Splash> {
   void initState() {
     Timer(const Duration(seconds: 5), () async {
       if (await FirebaseAuth.instance.currentUser != null) {
+        buildUser();
         Navigator.push(
           context,
           MaterialPageRoute(

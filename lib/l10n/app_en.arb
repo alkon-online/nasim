@@ -52,16 +52,13 @@
     "your_orders": "your Orders",
     "notifications": "Notifications",
     "your_notifications": "your notifications",
-    "error": "an error occurred",
-
-    "createdBy": "Tutorial by {company}",
-    "@createdBy": {
-        "description": "Copyright message",
-        "placeholders": {
-            "company": {
-                "type": "String",
-                "example": "Demo"
-      }
+    "error": "an error occurred {code}",
+    "@error": {
+      "description": "Error",
+      "placeholders": {
+          "code": {
+              "type": "String"
     }
+  }
   }
 }

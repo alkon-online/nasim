@@ -1,82 +1,107 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nasim/ui/home.dart';
+import 'package:nasim/addition/createUser.dart';
 
 //write book
-Future sendOrder(name, phone, type, notes, locality, subLocality,
-    {plan, issue}) async {
+Future sendOrder(
+    {username,
+    phone,
+    orderType,
+    notes,
+    locality,
+    subLocality,
+    plan,
+    issue}) async {
   // Reference the document
-  final docInstallation = FirebaseFirestore.instance.collection('orders').doc();
+  final docOrders = FirebaseFirestore.instance.collection('orders').doc();
 
-  final Installation = OrderClass(
-      name: name,
+  final Order = OrderClass(
+      username: username,
       phone: phone,
-      type: type,
-      gmail: Home.gmail,
+      orderType: orderType,
+      orderOwner: CurrentUser.uid,
       notes: notes,
       success: false,
       locality: locality,
       subLocality: subLocality,
-      date: Timestamp.now(),
-      plan: plan,
-      issue: issue);
+      createdAt: Timestamp.now(),
+      plan: plan ?? PlanItem(label: "", description: "", price: 0),
+      issue: issue ?? "");
 
-  final json = Installation.toJson();
+  final json = Order.toJson();
 
-  await docInstallation.set(json);
+  await docOrders.set(json);
 }
 
 class OrderClass {
-  String name;
+  String username;
   String phone;
-  String type;
-  String? gmail;
-  bool? success;
+  String orderType;
+  String orderOwner;
+  bool success;
   String notes;
   String locality;
   String subLocality;
-  Timestamp? date;
-  List? plan;
-  String? issue;
+  Timestamp createdAt;
+  PlanItem plan;
+  String issue;
 
   OrderClass(
-      {required this.name,
+      {required this.username,
       required this.phone,
-      required this.type,
-      gmail,
-      success,
+      required this.orderType,
+      required this.orderOwner,
+      required this.success,
       required this.notes,
       required this.locality,
       required this.subLocality,
-      date,
-      plan,
-      issue});
+      required this.createdAt,
+      required this.plan,
+      required this.issue});
 
   // to JSON
   Map<String, dynamic> toJson() => {
-        'name': name,
+        'username': username,
         'phone': phone,
-        'gmail': gmail,
-        'type': type,
+        'orderOwner': orderOwner,
+        'orderType': orderType,
         'success': success,
         'notes': notes,
         'locality': locality,
         'subLocality': subLocality,
-        'date': date,
-        'plan': plan,
+        'createdAt': createdAt,
+        'plan': plan.toJson(),
         'issue': issue
       };
 
   // from json
   static OrderClass fromJson(Map<String, dynamic> json) => OrderClass(
-      name: json['name'],
+      username: json['username'],
       phone: json['phone'],
-      type: json['type'],
-      gmail: json['gmail'],
+      orderType: json['orderType'],
+      orderOwner: json['orderOwner'],
       success: json['success'],
       notes: json['notes'],
       locality: json['locality'],
       subLocality: json['subLocality'],
-      date: json['date'],
-      plan: json['plan'],
+      createdAt: json['createdAt'],
+      plan: PlanItem.fromJson(json['plan']),
       issue: json['issue']);
+}
+
+class PlanItem {
+  String label;
+  String description;
+  double price;
+
+  PlanItem(
+      {required this.label, required this.description, required this.price});
+
+  // to JSON
+  Map<String, dynamic> toJson() =>
+      {'label': label, 'description': description, 'price': price};
+
+  static PlanItem fromJson(Map<String, dynamic> json) => PlanItem(
+      label: json['label'],
+      description: json['description'],
+      price: json['price']);
 }

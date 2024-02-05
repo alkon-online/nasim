@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nasim/addition/get.dart';
 import 'package:nasim/addition/sendOrder.dart';
 import 'package:nasim/addition/widgets.dart';
-import 'package:nasim/ui/success.dart';
+import 'package:nasim/ui/installation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Plan extends StatefulWidget {
-  final OrderClass order;
-  const Plan({super.key, required this.order});
+  const Plan({super.key});
 
   @override
   State<Plan> createState() => _PlanState();
@@ -85,17 +83,12 @@ class _PlanState extends State<Plan> {
           ),
         ),
         onTap: () {
-          sendOrder(
-              widget.order.name,
-              widget.order.phone,
-              widget.order.type,
-              widget.order.notes,
-              widget.order.locality,
-              widget.order.subLocality,
-              plan: [name, description, price]);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Success()),
+            MaterialPageRoute(
+                builder: (context) => Installation(
+                    plan: PlanItem(
+                        label: name, description: description, price: double.parse(price)))),
           );
         },
       );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nasim/addition/about_user.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/addition/change_notifier.dart';
 import 'package:nasim/addition/widgets.dart';
 import 'package:nasim/ui/language.dart';
@@ -98,7 +98,7 @@ class _AboutState extends State<About> {
                 size: 18.00,
                 width: screenWidth,
                 onclick: () {
-                  addUser(name.text, phone.text);
+                  createUser(name.text, phone.text);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const Language()),

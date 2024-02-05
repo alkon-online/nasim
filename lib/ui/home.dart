@@ -3,24 +3,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nasim/addition/createUser.dart';
 import 'package:nasim/addition/dialog.dart';
 import 'package:nasim/addition/flutterfire.dart';
 import 'package:nasim/addition/widgets.dart';
-import 'package:nasim/ui/installation.dart';
 import 'package:nasim/ui/maintenance.dart';
 import 'package:nasim/ui/notifications.dart';
+import 'package:nasim/ui/plan.dart';
 import 'package:nasim/ui/splash.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
-import '../addition/gmail.dart';
 import 'order/my_orders.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
-
-  static String name = '';
-  static String gmail = '';
 
   @override
   State<Home> createState() => _HomeState();
@@ -75,7 +72,6 @@ class _HomeState extends State<Home> {
         ),
       );
     }
-
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -105,7 +101,7 @@ class _HomeState extends State<Home> {
                           },
                         ),
                         FutureBuilder<DocumentSnapshot>(
-                          future: users.doc(uid).get(),
+                          future: users.doc(CurrentUser.uid).get(),
                           builder: (BuildContext context,
                               AsyncSnapshot<DocumentSnapshot> snapshot) {
                             if (snapshot.hasError) {
@@ -130,8 +126,7 @@ class _HomeState extends State<Home> {
                                 ConnectionState.done) {
                               Map<String, dynamic> user =
                                   snapshot.data!.data() as Map<String, dynamic>;
-                              Home.name = user['name'];
-                              Home.gmail = user['gmail'];
+                              CurrentUser.username = user['name'];
                               return defultText(
                                   text: user['name'],
                                   weight: FontWeight.w600,
@@ -212,7 +207,7 @@ class _HomeState extends State<Home> {
                                   CupertinoPageRoute(
                                       fullscreenDialog: true,
                                       builder: (context) =>
-                                          const Installation()),
+                                          const Plan()),
                                 );
                               }),
                           const SizedBox(
